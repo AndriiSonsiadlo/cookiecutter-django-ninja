@@ -1,3 +1,4 @@
+{% if cookiecutter.rest_api == 'DRF' -%}
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.mixins import ListModelMixin
@@ -28,3 +29,21 @@ class UserViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, GenericV
     def me(self, request):
         serializer = UserSerializer(request.user, context={"request": request})
         return Response(status=status.HTTP_200_OK, data=serializer.data)
+{%- elif cookiecutter.rest_api == 'Django Ninja' -%}
+from django.db.models import QuerySet
+from ninja import Router
+
+from {{ cookiecutter.project_slug }}.users.api.schema import UserSchema
+from {{ cookiecutter.project_slug }}.users.models import User
+
+router = Router(tags=["users"])
+
+
+def _get_users_queryset(request) -> QuerySet[User]:
+    return User.objects.filter(pk=request.user.pk)
+
+
+@router.get("/", response=list[UserSchema])
+def list_users(request):
+    return _get_users_queryset(request)
+{%- endif %}
