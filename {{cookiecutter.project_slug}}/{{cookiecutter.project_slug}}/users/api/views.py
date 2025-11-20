@@ -31,6 +31,7 @@ class UserViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, GenericV
         return Response(status=status.HTTP_200_OK, data=serializer.data)
 {%- elif cookiecutter.rest_api == 'Django Ninja' -%}
 from django.db.models import QuerySet
+from django.shortcuts import get_object_or_404
 from ninja import Router
 
 from {{ cookiecutter.project_slug }}.users.api.schema import UserSchema
@@ -46,4 +47,23 @@ def _get_users_queryset(request) -> QuerySet[User]:
 @router.get("/", response=list[UserSchema])
 def list_users(request):
     return _get_users_queryset(request)
+{%- if cookiecutter.username_type == "email" %}
+
+
+@router.get("/{pk}/", response=UserSchema)
+def retrieve_user(request, pk: str):
+    if pk == "me":
+        return request.user
+    users_qs = _get_users_queryset(request)
+    return get_object_or_404(users_qs, pk=pk)
+{%- else %}
+
+
+@router.get("/{username}/", response=UserSchema)
+def retrieve_user(request, username: str):
+    if username == "me":
+        return request.user
+    users_qs = _get_users_queryset(request)
+    return get_object_or_404(users_qs, username=username)
+{%- endif %}
 {%- endif %}
