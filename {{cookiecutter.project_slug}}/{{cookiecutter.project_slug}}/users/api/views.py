@@ -34,6 +34,7 @@ from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
 from ninja import Router
 
+from {{ cookiecutter.project_slug }}.users.api.schema import UpdateUserSchema
 from {{ cookiecutter.project_slug }}.users.api.schema import UserSchema
 from {{ cookiecutter.project_slug }}.users.models import User
 
@@ -65,5 +66,26 @@ def retrieve_user(request, username: str):
         return request.user
     users_qs = _get_users_queryset(request)
     return get_object_or_404(users_qs, username=username)
+{%- endif %}
+{%- if cookiecutter.username_type == "email" %}
+
+
+@router.patch("/{pk}/", response=UserSchema)
+def update_user(request, pk: str, data: UpdateUserSchema):
+    users_qs = _get_users_queryset(request)
+    user = get_object_or_404(users_qs, pk=pk)
+    user.name = data.name
+    user.save()
+    return user
+{%- else %}
+
+
+@router.patch("/{username}/", response=UserSchema)
+def update_user(request, username: str, data: UpdateUserSchema):
+    users_qs = _get_users_queryset(request)
+    user = get_object_or_404(users_qs, username=username)
+    user.name = data.name
+    user.save()
+    return user
 {%- endif %}
 {%- endif %}
