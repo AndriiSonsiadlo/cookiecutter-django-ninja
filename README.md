@@ -1,3 +1,23 @@
+[//]: # (add something or disclaimer or descirption about this project, that i added django ninja api)
+# Cookiecutter Django with Django Ninja API
+
+This is a fork of Cookiecutter Django that adds support for Django Ninja API.
+
+To install it, follow two steps:
+
+
+1. Get Cookiecutter. Trust me, it's awesome:
+```bash
+  uv tool install "cookiecutter>=1.7.0"
+```
+
+2. Run it against this repo:
+```bash
+  uvx cookiecutter https://github.com/andriisonsiadlo/cookiecutter-django-ninja
+```
+
+
+
 # Cookiecutter Django
 
 [![Build Status](https://img.shields.io/github/actions/workflow/status/cookiecutter/cookiecutter-django/ci.yml?branch=main)](https://github.com/cookiecutter/cookiecutter-django/actions/workflows/ci.yml?query=branch%3Amain)
